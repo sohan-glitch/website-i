@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,8 +158,8 @@
   <section class="about">
     <h2>About This Page</h2>
     <p>
-      Hey, I’m <strong>Sohan</strong>. This site is where I keep all my tech experiments, creations, and whatever wild stuff I come up with.
-      I built this entirely with code — no fancy libraries, no templates. Just imagination and a lot of late nights.
+      Hey, We're <strong>Sohan</strong> and <strong>Sameer</strong>. This site is where we keep all our tech experiments, creations, and whatever wild stuff we come up with.
+      we built this entirely with code — no fancy libraries, no templates. Just imagination and a lot of late nights. (as well as unfinished homewroks)
     </p>
     <p>
       Scroll around, explore the hub, and if you find something cool, even better. This is just the beginning — more projects and crazy ideas coming soon.
@@ -185,96 +186,117 @@
     resize();
     window.addEventListener('resize', resize);
 
-    class Star {
+    // ---- STAR CLASSES ----
+    class GalaxyStar {
       constructor() {
         this.reset();
       }
-      reset() {
-        const armOffset = (Math.random() - 0.5) * 0.4; // loosen spiral structure
-        const arm = Math.floor(Math.random() * 3);
-        const angle = arm * (Math.PI * 2 / 3) + Math.random() * 0.5;
-        const radius = Math.pow(Math.random(), 0.5) * 800 + 60;
-        this.radius = radius;
-        this.angle = angle + armOffset;
-        this.speed = 0.0002 + Math.random() * 0.0008;
-        this.tilt = 0.25;
-        this.yOffset = (Math.random() - 0.5) * radius * this.tilt;
 
-        // Color shifts outward
-        const hue = 200 + (radius / 800) * 100; 
-        const sat = 80 - (radius / 800) * 40;
-        const light = 70 - (radius / 800) * 30;
-        this.color = `hsla(${hue}, ${sat}%, ${light}%, ${Math.random() * 0.8 + 0.2})`;
-        this.size = Math.random() * 1.4 + 0.4;
+      reset() {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.sqrt(Math.random()) * 700 + 100; // expanded orbit radius
+        const tilt = 0.25;
+        this.radius = distance;
+        this.angle = angle;
+        this.speed = 0.0002 + Math.random() * 0.0008;
+        this.yOffset = (Math.random() - 0.5) * distance * tilt;
+
+        const colors = [
+          'rgba(255,255,255,',
+          'rgba(255,180,180,',
+          'rgba(255,255,180,',
+          'rgba(180,255,255,',
+          'rgba(180,180,255,',
+          'rgba(255,180,255,'
+        ];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        this.alpha = Math.max(0.2, 1 - this.radius / 900);
+        this.size = Math.random() * 1.3 + 0.4;
+        this.color = color + this.alpha + ')';
       }
+
       update() {
         this.angle += this.speed;
       }
-      draw() {
+
+      draw(ctx) {
         const x = centerX + this.radius * Math.cos(this.angle);
-        const y = centerY + this.radius * Math.sin(this.angle) * 0.25 + this.yOffset;
+        const y = centerY + this.radius * Math.sin(this.angle) * 0.2 + this.yOffset;
         ctx.beginPath();
-        ctx.arc(x, y, this.size, 0, Math.PI * 2);
+        ctx.arc(x, y, this.size, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();
       }
     }
 
-    class Dust {
+    class BackgroundStar {
       constructor() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.size = Math.random() * 1.8;
-        this.color = `hsla(${180 + Math.random()*100}, 70%, 80%, ${Math.random()*0.2})`;
+        this.size = Math.random() * 1.2;
+        this.alpha = Math.random() * 0.5 + 0.1;
+        this.color = `rgba(255,255,255,${this.alpha})`;
       }
-      draw() {
+
+      draw(ctx) {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
         ctx.fillStyle = this.color;
         ctx.fill();
       }
     }
 
-    const stars = Array.from({length: 4000}, () => new Star());
-    const dust = Array.from({length: 800}, () => new Dust());
+    // ---- STARS ----
+    const galaxyStars = [];
+    const backgroundStars = [];
+    for (let i = 0; i < 1800; i++) galaxyStars.push(new GalaxyStar()); // more stars
+    for (let i = 0; i < 400; i++) backgroundStars.push(new BackgroundStar());
 
-    function drawCore() {
-      const core = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 300);
-      core.addColorStop(0, 'rgba(255,255,255,1)');
-      core.addColorStop(0.2, 'rgba(255,220,180,0.8)');
-      core.addColorStop(0.5, 'rgba(255,150,100,0.4)');
-      core.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = core;
+    // ---- BLACK HOLE ----
+    function drawBlackHole() {
+      // Event horizon (black center)
+      const bhRadius = 70;
+      const gradient = ctx.createRadialGradient(centerX, centerY, bhRadius * 0.2, centerX, centerY, bhRadius * 1.5);
+      gradient.addColorStop(0, 'rgba(0,0,0,1)');
+      gradient.addColorStop(0.5, 'rgba(10,10,10,0.9)');
+      gradient.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 300, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, bhRadius * 1.5, 0, 2 * Math.PI);
+      ctx.fillStyle = gradient;
       ctx.fill();
 
-      const blackHole = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 80);
-      blackHole.addColorStop(0, 'rgba(0,0,0,1)');
-      blackHole.addColorStop(1, 'rgba(0,0,0,0.9)');
-      ctx.fillStyle = blackHole;
+      // Accretion disk glow
+      const diskGradient = ctx.createRadialGradient(centerX, centerY, bhRadius * 0.8, centerX, centerY, bhRadius * 3.5);
+      diskGradient.addColorStop(0, 'rgba(255, 230, 180, 0.15)');
+      diskGradient.addColorStop(0.4, 'rgba(255, 180, 80, 0.1)');
+      diskGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.beginPath();
-      ctx.arc(centerX, centerY, 80, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, bhRadius * 3.5, 0, 2 * Math.PI);
+      ctx.fillStyle = diskGradient;
       ctx.fill();
     }
 
     function animate() {
-      ctx.fillStyle = 'rgba(0,0,10,0.3)';
-      ctx.fillRect(0, 0, width, height);
-      dust.forEach(d => d.draw());
-      drawCore();
-      stars.forEach(s => { s.update(); s.draw(); });
+      ctx.clearRect(0, 0, width, height);
+      backgroundStars.forEach(star => star.draw(ctx));
+      drawBlackHole();
+      galaxyStars.forEach(star => {
+        star.update();
+        star.draw(ctx);
+      });
       requestAnimationFrame(animate);
     }
+
     animate();
 
-    // Scroll Effects
     const aboutSection = document.querySelector('.about');
     const scrollBox = document.getElementById('scrollBox');
+
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
       canvas.classList.toggle('visible', scrollY > 100);
       scrollBox.style.display = scrollY > 200 ? 'flex' : 'none';
+
       const sectionTop = aboutSection.offsetTop;
       const sectionHeight = aboutSection.offsetHeight;
       if (scrollY + window.innerHeight > sectionTop + sectionHeight / 4) {
@@ -283,22 +305,10 @@
         aboutSection.classList.remove('visible');
       }
     });
-    scrollBox.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    // === OPTIONAL NEBULA OVERLAY ===
-const nebulaImg = new Image();
-nebulaImg.src = "milkyway.png"; // put this in same folder as HTML
-nebulaImg.onload = () => {
-  function drawNebulaOverlay() {
-    ctx.globalAlpha = 0.25;
-    ctx.globalCompositeOperation = "screen";
-    ctx.drawImage(nebulaImg, centerX - nebulaImg.width / 2, centerY - nebulaImg.height / 2);
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = "source-over";
-    requestAnimationFrame(drawNebulaOverlay);
-  }
-  drawNebulaOverlay();
-};
 
+    scrollBox.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>
