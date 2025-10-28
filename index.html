@@ -284,6 +284,21 @@
       }
     });
     scrollBox.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    // === OPTIONAL NEBULA OVERLAY ===
+const nebulaImg = new Image();
+nebulaImg.src = "milkyway.png"; // put this in same folder as HTML
+nebulaImg.onload = () => {
+  function drawNebulaOverlay() {
+    ctx.globalAlpha = 0.25;
+    ctx.globalCompositeOperation = "screen";
+    ctx.drawImage(nebulaImg, centerX - nebulaImg.width / 2, centerY - nebulaImg.height / 2);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+    requestAnimationFrame(drawNebulaOverlay);
+  }
+  drawNebulaOverlay();
+};
+
   </script>
 </body>
 </html>
