@@ -9,31 +9,31 @@
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
-      background: linear-gradient(135deg, #1d2b64, #f8cdda);
+      background: linear-gradient(135deg, #0a192f, #112d4e, #1b1b2f);
       background-attachment: fixed;
       background-repeat: no-repeat;
       background-size: cover;
     }
 
     .pattern {
-      background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
-      background-size: 20px 20px;
-      padding: 40px;
+      background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 25px 25px;
+      padding: 50px;
     }
 
     .container {
       max-width: 850px;
       margin: auto;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0, 0, 0, 0.65);
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     }
 
     h1, h2 {
       font-size: 2rem;
       margin-bottom: 20px;
-      border-bottom: 2px solid #fff;
+      border-bottom: 2px solid #00bfff;
       padding-bottom: 10px;
     }
 
@@ -47,12 +47,39 @@
     }
 
     a {
-      color: #ffd700;
+      color: #00bfff;
       text-decoration: none;
     }
 
     a:hover {
+      color: #66d9ff;
       text-decoration: underline;
+    }
+
+    /* Stylish Home Button */
+    .home-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .home-button a {
+      display: inline-block;
+      background-color: #00bfff;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 10px rgba(0, 191, 255, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .home-button a:hover {
+      background-color: #009acd;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0, 191, 255, 0.6);
     }
 
     .team {
@@ -61,17 +88,18 @@
   </style>
 </head>
 <body>
-      <div class="home-button">
-        <a href="index.html">HOME</a>
-    </div>
+
+  <div class="home-button">
+    <a href="index.html">← HOME</a>
+  </div>
 
   <div class="pattern">
     <div class="container">
 
       <h1>About the Team</h1>
-      <p><strong>CEO  : USERK8 / Sohan</strong></p>
-      <p><strong>CO - CEO :</strong> SpaceS1 / Sameer </p>
-      <p><strong>Part-Time  Slave Helper:</strong> Mehul</p>
+      <p><strong>CEO:</strong> USERK8 / Sohan</p>
+      <p><strong>CO - CEO:</strong> SpaceS1 / Sameer</p>
+      <p><strong>Part-Time Slave Helper:</strong> Mehul</p>
       <p><strong>Quarter-Time Slave Helper:</strong> Gaurav Sardar</p>
 
       <h2>Contact us via emails</h2>
@@ -79,9 +107,8 @@
         <li><a href="mailto:polisohankumarreddy@gmail.com">polisohankumarreddy@gmail.com</a></li>
         <li><a href="mailto:pratimaaarush4696@gmail.com">pratima4696@gmail.com</a></li>
         <li><a href="mailto:GauravSardar1234@gmail.com">gauravsardar1234@gmail.com</a></li>
-
-        <p> Respectively,</p>
       </ul>
+      <p>Respectively,</p>
 
       <h2>Our Other Projects</h2>
       <ul>
@@ -94,5 +121,6 @@
 
     </div>
   </div>
+
 </body>
 </html>
