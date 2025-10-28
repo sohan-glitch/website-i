@@ -108,65 +108,93 @@
       transform: translateY(0);
     }
 
-    /* ===== Scroll to top rocket ===== */
+    /* ===== Scroll to top rocket button ===== */
     #scrollBox {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       background: black;
       border: 2px solid white;
       cursor: pointer;
       z-index: 10;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #00fff7;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00fff7;
       display: none;
       align-items: center;
       justify-content: center;
     }
 
-    #rocket {
-      font-size: 1.8rem;
+    /* ===== Custom Rocket ===== */
+    .rocket {
       position: relative;
-      animation: hoverRocket 1s infinite alternate;
-      transition: transform 0.5s ease, opacity 0.5s ease;
+      width: 20px;
+      height: 60px;
+      background: linear-gradient(180deg, #00fff7 0%, #0055ff 100%);
+      border-radius: 10px 10px 4px 4px;
+      transition: transform 1s ease, opacity 0.5s ease;
     }
 
-    @keyframes hoverRocket {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-6px); }
-    }
-
-    /* ===== ROCKET FIRE EFFECT ===== */
-    .fire {
+    .rocket::before {
+      content: '';
       position: absolute;
-      bottom: -10px;
+      top: -15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 6px;
-      height: 16px;
-      background: linear-gradient(to bottom, #ff0, #f00, #800);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 15px solid #00fff7;
+    }
+
+    .rocket::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 6px;
+      background: #00fff7;
+      border-radius: 3px;
+    }
+
+    /* ===== Rocket Flame ===== */
+    .flame {
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%) scaleY(0);
+      width: 10px;
+      height: 30px;
+      background: radial-gradient(ellipse at center, #ff0 0%, #f00 60%, transparent 80%);
       border-radius: 50%;
-      opacity: 0.8;
-      animation: flameFlicker 0.15s infinite alternate;
-      filter: blur(1px);
+      opacity: 0;
+      transition: all 0.2s ease;
     }
 
-    @keyframes flameFlicker {
-      0% { transform: translateX(-50%) scaleY(1); opacity: 0.8; }
-      100% { transform: translateX(-50%) scaleY(0.7); opacity: 0.4; }
+    .ignite .flame {
+      opacity: 1;
+      transform: translateX(-50%) scaleY(1);
+      animation: flicker 0.15s infinite alternate;
     }
 
-    /* ===== LAUNCH ANIMATION ===== */
+    @keyframes flicker {
+      0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
+      100% { transform: translateX(-50%) scaleY(0.8) scaleX(1.2); opacity: 0.5; }
+    }
+
+    /* ===== Rocket Launch ===== */
     .launch {
-      animation: rocketLaunch 1s ease forwards;
+      animation: rocketLaunch 1.5s ease forwards;
     }
 
     @keyframes rocketLaunch {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      50% { transform: translateY(-150px) scale(1.2); opacity: 1; }
-      100% { transform: translateY(-400px) scale(0.8); opacity: 0; }
+      0% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-200px); opacity: 1; }
+      100% { transform: translateY(-500px); opacity: 0; }
     }
   </style>
 </head>
@@ -203,9 +231,8 @@
 
   <!-- Scroll to Top Rocket -->
   <div id="scrollBox">
-    <div id="rocket">
-      🚀
-      <div class="fire"></div>
+    <div class="rocket" id="rocket">
+      <div class="flame"></div>
     </div>
   </div>
 
@@ -225,12 +252,8 @@
     window.addEventListener('resize', resize);
 
     // ===== STAR + DUST CLASSES =====
-
     class GalaxyStar {
-      constructor() {
-        this.reset();
-      }
-
+      constructor() { this.reset(); }
       reset() {
         const angle = Math.random() * Math.PI * 2;
         const distance = Math.sqrt(Math.random()) * 900 + 100;
@@ -239,7 +262,6 @@
         this.angle = angle;
         this.speed = 0.0001 + Math.random() * 0.0008;
         this.yOffset = (Math.random() - 0.5) * distance * tilt;
-
         const colors = [
           'rgba(255,255,255,',
           'rgba(255,200,160,',
@@ -253,11 +275,7 @@
         this.size = Math.random() * 1.5 + 0.5;
         this.color = color + this.alpha + ')';
       }
-
-      update() {
-        this.angle += this.speed;
-      }
-
+      update() { this.angle += this.speed; }
       draw(ctx) {
         const x = centerX + this.radius * Math.cos(this.angle);
         const y = centerY + this.radius * Math.sin(this.angle) * 0.2 + this.yOffset;
@@ -269,10 +287,7 @@
     }
 
     class SpaceDust {
-      constructor() {
-        this.reset();
-      }
-
+      constructor() { this.reset(); }
       reset() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
@@ -282,13 +297,11 @@
         this.color = `hsla(${hue}, 80%, 70%, ${this.alpha})`;
         this.speed = Math.random() * 0.2 + 0.05;
       }
-
       update() {
         this.x -= this.speed * 0.3;
         this.y += Math.sin(this.x / 50) * 0.2;
         if (this.x < 0) this.x = width;
       }
-
       draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -297,13 +310,11 @@
       }
     }
 
-    // ===== OBJECT POPULATION =====
     const galaxyStars = [];
     const dustParticles = [];
     for (let i = 0; i < 2500; i++) galaxyStars.push(new GalaxyStar());
     for (let i = 0; i < 500; i++) dustParticles.push(new SpaceDust());
 
-    // ===== CORE / ACCRETION / HALO =====
     function drawGalacticCore() {
       const innerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 250);
       innerGradient.addColorStop(0, 'rgba(255,255,255,1)');
@@ -335,10 +346,8 @@
       ctx.fill();
     }
 
-    // ===== ANIMATION LOOP =====
     function animate() {
       ctx.clearRect(0, 0, width, height);
-
       const nebula = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width / 1.2);
       nebula.addColorStop(0, 'rgba(20,10,30,0.6)');
       nebula.addColorStop(0.5, 'rgba(10,5,25,0.8)');
@@ -355,9 +364,9 @@
 
     animate();
 
-    // ===== SCROLL ANIMATION EFFECTS =====
     const aboutSection = document.querySelector('.about');
     const scrollBox = document.getElementById('scrollBox');
+    const rocket = document.getElementById('rocket');
 
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
@@ -373,20 +382,15 @@
       }
     });
 
-    // ===== ROCKET LAUNCH BEHAVIOR =====
+    // ===== Rocket Launch Logic =====
     scrollBox.addEventListener('click', () => {
-      const rocket = document.getElementById('rocket');
-
-      // Add launch animation
-      rocket.classList.add('launch');
-
-      // Scroll smoothly to top
+      rocket.classList.add('ignite', 'launch');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Reset animation after launch
+      // Reset rocket after animation
       setTimeout(() => {
-        rocket.classList.remove('launch');
-      }, 1000);
+        rocket.classList.remove('ignite', 'launch');
+      }, 1500);
     });
   </script>
 </body>
