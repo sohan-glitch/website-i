@@ -108,93 +108,117 @@
       transform: translateY(0);
     }
 
-    /* ===== Scroll to top rocket button ===== */
+    /* ===== Scroll Rocket Button ===== */
     #scrollBox {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      width: 70px;
-      height: 70px;
+      width: 90px;
+      height: 90px;
       background: black;
       border: 2px solid white;
-      cursor: pointer;
-      z-index: 10;
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 0 15px #00fff7;
+      cursor: pointer;
       display: none;
       align-items: center;
       justify-content: center;
+      z-index: 10;
     }
 
-    /* ===== Custom Rocket ===== */
+    /* ===== Cartoon Rocket ===== */
     .rocket {
       position: relative;
-      width: 20px;
-      height: 60px;
-      background: linear-gradient(180deg, #00fff7 0%, #0055ff 100%);
-      border-radius: 10px 10px 4px 4px;
+      width: 40px;
+      height: 100px;
+      background: linear-gradient(180deg, #c0c0c0 0%, #e0e0e0 50%, #a0a0a0 100%);
+      border-radius: 20px 20px 10px 10px;
+      overflow: visible;
       transition: transform 1s ease, opacity 0.5s ease;
     }
 
+    /* Nose cone */
     .rocket::before {
       content: '';
       position: absolute;
-      top: -15px;
+      top: -30px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 15px solid #00fff7;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid #ff5555;
     }
 
-    .rocket::after {
-      content: '';
+    /* Window */
+    .window {
       position: absolute;
-      bottom: -8px;
+      top: 30px;
       left: 50%;
       transform: translateX(-50%);
-      width: 12px;
-      height: 6px;
-      background: #00fff7;
-      border-radius: 3px;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle at 30% 30%, #88f, #004);
+      border: 3px solid #00fff7;
+      border-radius: 50%;
     }
 
-    /* ===== Rocket Flame ===== */
+    /* Fins */
+    .fin {
+      position: absolute;
+      bottom: 0;
+      width: 20px;
+      height: 25px;
+      background: #ff5555;
+      z-index: -1;
+    }
+
+    .fin.left {
+      left: -18px;
+      border-radius: 0 0 0 10px;
+      transform: rotate(-15deg);
+    }
+
+    .fin.right {
+      right: -18px;
+      border-radius: 0 0 10px 0;
+      transform: rotate(15deg);
+    }
+
+    /* Fire */
     .flame {
       position: absolute;
-      bottom: -18px;
+      bottom: -30px;
       left: 50%;
       transform: translateX(-50%) scaleY(0);
-      width: 10px;
-      height: 30px;
-      background: radial-gradient(ellipse at center, #ff0 0%, #f00 60%, transparent 80%);
+      width: 14px;
+      height: 40px;
+      background: radial-gradient(circle at 50% 10%, #ff0 0%, #f00 70%, transparent 80%);
       border-radius: 50%;
       opacity: 0;
-      transition: all 0.2s ease;
     }
 
+    /* Fire flicker when ignited */
     .ignite .flame {
-      opacity: 1;
       transform: translateX(-50%) scaleY(1);
-      animation: flicker 0.15s infinite alternate;
+      opacity: 1;
+      animation: flameFlicker 0.15s infinite alternate;
     }
 
-    @keyframes flicker {
-      0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
-      100% { transform: translateX(-50%) scaleY(0.8) scaleX(1.2); opacity: 0.5; }
+    @keyframes flameFlicker {
+      0% { transform: translateX(-50%) scaleY(1); opacity: 0.9; }
+      100% { transform: translateX(-50%) scaleY(0.8); opacity: 0.5; }
     }
 
     /* ===== Rocket Launch ===== */
     .launch {
-      animation: rocketLaunch 1.5s ease forwards;
+      animation: rocketFly 2s ease-in-out forwards;
     }
 
-    @keyframes rocketLaunch {
+    @keyframes rocketFly {
       0% { transform: translateY(0); opacity: 1; }
-      50% { transform: translateY(-200px); opacity: 1; }
-      100% { transform: translateY(-500px); opacity: 0; }
+      100% { transform: translateY(-120vh) scale(1.1); opacity: 0; }
     }
   </style>
 </head>
@@ -229,9 +253,12 @@
     </p>
   </section>
 
-  <!-- Scroll to Top Rocket -->
+  <!-- Scroll-to-top rocket -->
   <div id="scrollBox">
     <div class="rocket" id="rocket">
+      <div class="window"></div>
+      <div class="fin left"></div>
+      <div class="fin right"></div>
       <div class="flame"></div>
     </div>
   </div>
@@ -251,7 +278,7 @@
     resize();
     window.addEventListener('resize', resize);
 
-    // ===== STAR + DUST CLASSES =====
+    // Galaxy star and dust
     class GalaxyStar {
       constructor() { this.reset(); }
       reset() {
@@ -262,14 +289,7 @@
         this.angle = angle;
         this.speed = 0.0001 + Math.random() * 0.0008;
         this.yOffset = (Math.random() - 0.5) * distance * tilt;
-        const colors = [
-          'rgba(255,255,255,',
-          'rgba(255,200,160,',
-          'rgba(200,220,255,',
-          'rgba(255,180,250,',
-          'rgba(180,255,255,',
-          'rgba(255,240,180,'
-        ];
+        const colors = ['rgba(255,255,255,', 'rgba(255,200,160,', 'rgba(200,220,255,', 'rgba(255,180,250,', 'rgba(180,255,255,', 'rgba(255,240,180,'];
         const color = colors[Math.floor(Math.random() * colors.length)];
         this.alpha = Math.max(0.15, 1 - this.radius / 1100);
         this.size = Math.random() * 1.5 + 0.5;
@@ -310,43 +330,10 @@
       }
     }
 
-    const galaxyStars = [];
-    const dustParticles = [];
-    for (let i = 0; i < 2500; i++) galaxyStars.push(new GalaxyStar());
-    for (let i = 0; i < 500; i++) dustParticles.push(new SpaceDust());
+    const stars = Array.from({ length: 2000 }, () => new GalaxyStar());
+    const dust = Array.from({ length: 400 }, () => new SpaceDust());
 
-    function drawGalacticCore() {
-      const innerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 250);
-      innerGradient.addColorStop(0, 'rgba(255,255,255,1)');
-      innerGradient.addColorStop(0.2, 'rgba(255,250,200,0.8)');
-      innerGradient.addColorStop(0.4, 'rgba(255,200,150,0.5)');
-      innerGradient.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 250, 0, 2 * Math.PI);
-      ctx.fillStyle = innerGradient;
-      ctx.fill();
-
-      const diskGradient = ctx.createRadialGradient(centerX, centerY, 100, centerX, centerY, 600);
-      diskGradient.addColorStop(0, 'rgba(255,255,255,0.3)');
-      diskGradient.addColorStop(0.3, 'rgba(255,220,160,0.25)');
-      diskGradient.addColorStop(0.6, 'rgba(160,100,255,0.15)');
-      diskGradient.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, 600, 0, 2 * Math.PI);
-      ctx.fillStyle = diskGradient;
-      ctx.fill();
-
-      const bhRadius = 60;
-      const blackGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, bhRadius * 1.3);
-      blackGradient.addColorStop(0, 'rgba(0,0,0,1)');
-      blackGradient.addColorStop(1, 'rgba(0,0,0,0.85)');
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, bhRadius * 1.3, 0, 2 * Math.PI);
-      ctx.fillStyle = blackGradient;
-      ctx.fill();
-    }
-
-    function animate() {
+    function drawGalaxy() {
       ctx.clearRect(0, 0, width, height);
       const nebula = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width / 1.2);
       nebula.addColorStop(0, 'rgba(20,10,30,0.6)');
@@ -354,15 +341,11 @@
       nebula.addColorStop(1, 'rgba(0,0,0,1)');
       ctx.fillStyle = nebula;
       ctx.fillRect(0, 0, width, height);
-
-      dustParticles.forEach(d => { d.update(); d.draw(ctx); });
-      drawGalacticCore();
-      galaxyStars.forEach(s => { s.update(); s.draw(ctx); });
-
-      requestAnimationFrame(animate);
+      dust.forEach(d => { d.update(); d.draw(ctx); });
+      stars.forEach(s => { s.update(); s.draw(ctx); });
+      requestAnimationFrame(drawGalaxy);
     }
-
-    animate();
+    drawGalaxy();
 
     const aboutSection = document.querySelector('.about');
     const scrollBox = document.getElementById('scrollBox');
@@ -374,23 +357,22 @@
       scrollBox.style.display = scrollY > 200 ? 'flex' : 'none';
 
       const sectionTop = aboutSection.offsetTop;
-      const sectionHeight = aboutSection.offsetHeight;
-      if (scrollY + window.innerHeight > sectionTop + sectionHeight / 4) {
+      if (scrollY + window.innerHeight > sectionTop + 100) {
         aboutSection.classList.add('visible');
       } else {
         aboutSection.classList.remove('visible');
       }
     });
 
-    // ===== Rocket Launch Logic =====
+    // Rocket launch
     scrollBox.addEventListener('click', () => {
       rocket.classList.add('ignite', 'launch');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Reset rocket after animation
+      // Reset rocket
       setTimeout(() => {
         rocket.classList.remove('ignite', 'launch');
-      }, 1500);
+      }, 2000);
     });
   </script>
 </body>
