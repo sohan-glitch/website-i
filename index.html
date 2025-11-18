@@ -107,67 +107,7 @@
       opacity: 1;
       transform: translateY(0);
     }
-
-    /* ===== Scroll Rocket Button ===== */
-    #scrollBox {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      width: 70px;
-      height: 70px;
-      background: black;
-      border: 2px solid white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #00fff7;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-    }
-
-    #rocket {
-      position: relative;
-      width: 50px;
-      height: 50px;
-      background: url('images.png') no-repeat center/contain;
-      transition: transform 1s ease, opacity 0.5s ease;
-    }
-
-    .flame {
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%) scaleY(0);
-      width: 10px;
-      height: 25px;
-      background: radial-gradient(circle at 50% 10%, #ff0 0%, #f00 70%, transparent 80%);
-      border-radius: 50%;
-      opacity: 0;
-    }
-
-    .ignite .flame {
-      transform: translateX(-50%) scaleY(1);
-      opacity: 1;
-      animation: flameFlicker 0.15s infinite alternate;
-    }
-
-    @keyframes flameFlicker {
-      0% { transform: translateX(-50%) scaleY(1); opacity: 0.9; }
-      100% { transform: translateX(-50%) scaleY(0.8); opacity: 0.5; }
-    }
-
-    .launch {
-      animation: rocketFly 2s ease-in-out forwards;
-    }
-
-    @keyframes rocketFly {
-      0% { transform: translateY(0) scale(1); opacity: 1; }
-      100% { transform: translateY(-130vh) scale(1.1); opacity: 0; }
-    }
-  </style>
-</head>
-<body>
+  
   <!-- Galaxy canvas -->
   <canvas id="galaxy"></canvas>
 
@@ -260,76 +200,7 @@
 
     const galaxyStars = Array.from({ length: 2000 }, () => new GalaxyStar());
 
-    // ===== DRAWING =====
-    function drawScene() {
-      ctx.clearRect(0, 0, width, height);
-
-      if (!galaxyVisible) {
-        // Starfield only
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = "white";
-        stars.forEach(star => {
-          star.x -= star.s;
-          if (star.x < 0) star.x = width;
-          ctx.beginPath();
-          ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-          ctx.fill();
-        });
-      } else {
-        // Galaxy view
-        const nebula = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width / 1.2);
-        nebula.addColorStop(0, 'rgba(20,10,30,0.6)');
-        nebula.addColorStop(0.5, 'rgba(10,5,25,0.8)');
-        nebula.addColorStop(1, 'rgba(0,0,0,1)');
-        ctx.fillStyle = nebula;
-        ctx.fillRect(0, 0, width, height);
-
-        galaxyStars.forEach(s => { s.update(); s.draw(ctx); });
-      }
-
-      requestAnimationFrame(drawScene);
-    }
-
-    drawScene();
-
-    const aboutSection = document.querySelector('.about');
-    const scrollBox = document.getElementById('scrollBox');
-    const rocket = document.getElementById('rocket');
-
-    // ===== SCROLL EFFECTS =====
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-
-      // Switch from stars → galaxy
-      if (scrollY > window.innerHeight * 0.3) {
-        galaxyVisible = true;
-        canvas.classList.add('visible');
-      } else {
-        galaxyVisible = false;
-        canvas.classList.remove('visible');
-      }
-
-      scrollBox.style.display = scrollY > 200 ? 'flex' : 'none';
-
-      const sectionTop = aboutSection.offsetTop;
-      if (scrollY + window.innerHeight > sectionTop + 100) {
-        aboutSection.classList.add('visible');
-      } else {
-        aboutSection.classList.remove('visible');
-      }
-    });
-
-    // ===== ROCKET LAUNCH =====
-    scrollBox.addEventListener('click', () => {
-      rocket.classList.add('ignite', 'launch');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // Reset after animation
-      setTimeout(() => {
-        rocket.classList.remove('ignite', 'launch');
-      }, 2000);
-    });
+  
   </script>
 </body>
 </html>
